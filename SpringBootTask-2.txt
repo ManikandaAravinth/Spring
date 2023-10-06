@@ -1,0 +1,52 @@
+public Response updateUser(moodleModel datas) {
+	try {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+
+		try (Connection conn = DriverManager.getConnection(url, username, password);
+				Statement st = conn.createStatement();) {
+			Date date = new Date(Calendar.getInstance().getTime().getTime());
+			datas.setUpdatedDate(date);
+
+			String updateQuery = "update user_details set email = '"+ datas.getEmail() +"' , password = '"+datas.getPassword()+"', mobile_number = "+datas.getmobile_number()+" where s_no = '"+datas.getsNo()+"';";
+
+			System.out.println(updateQuery);
+			
+			
+			Pattern email = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
+			Matcher emailMatch = email.matcher(datas.getEmail());
+			
+			boolean mail = emailMatch.find();
+			System.out.println(em);
+
+			Pattern mobileNumber = Pattern.compile("[6789]{1}[0-9]{9}");
+			Matcher mobileMatch = mobileNumber.matcher(""+datas.getmobileNumber()+"");
+							
+			boolean number = mobileMatch.find();
+			System.out.println(ph);
+
+			 
+			 if (mail && number) {
+
+					st.executeUpdate(updateQuery);
+					res.setResponseCode(200);
+					res.setResponseMsg("Success");
+					res.setData("Updated Successfully");
+				}
+			 else {
+				 res.setResponseCode(300);
+					res.setResponseMsg("Failed");
+					res.setData("Invalid Email Or Mobile Number!");
+			 }
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			
+			res.setResponseCode(500);
+			res.setResponseMsg("Error");
+			res.setData("Internal Server Error!");
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return res;
+}

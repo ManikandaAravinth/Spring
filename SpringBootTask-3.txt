@@ -1,0 +1,104 @@
+1). API One - Get all the data's that were present in the particular table
+--------------------------------------------------------------------------
+
+
+@Override
+	public Response getAllUsers() {
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			String getQuery = "SELECT * FROM batch_17.user_details where is_active = 1;";
+			System.out.println(getQuery);
+			try (Connection conn = DriverManager.getConnection(url, username, password);
+					Statement st = conn.createStatement();
+					ResultSet rs = st.executeQuery(getQuery);) {
+
+				JSONArray jsonArray = new JSONArray();
+
+				while (rs.next()) {
+					JSONObject jsonObject = new JSONObject();
+
+					jsonObject.put("firstName", rs.getString("first_name"));
+					jsonObject.put("lastName", rs.getString("last_name"));
+					jsonObject.put("email", rs.getString("email"));
+					jsonObject.put("password", rs.getString("password"));
+					jsonObject.put("phoneNo", rs.getLong("mobile_number"));
+					jsonObject.put("age", rs.getInt("age"));
+					jsonObject.put("gender", rs.getString("gender"));
+					jsonObject.put("dob", rs.getDate("DOB"));
+					jsonObject.put("location", rs.getString("location"));
+
+					jsonArray.add(jsonObject);
+				}
+
+				res.setResponseCode(200);
+			res.setResponseMsg("Success");
+			res.setData("Data's Fetched Successfully!");
+			res.setjData(jsonArray);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setResponseCode(400);
+			res.setResponseMsg("Error");
+			res.setData("No Data's Were Found!");
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+
+2). API Two - Get a particular persons data from the table
+----------------------------------------------------------
+
+
+@SuppressWarnings("unchecked")
+@Override
+public Response getOneUser(String sNo) {
+	try {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		String getQuery = "SELECT * FROM batch_17.user_details where s_no = '"+ sNo +"';";
+		System.out.println(getQuery);
+		
+		try (Connection conn = DriverManager.getConnection(url, username, password);
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(getQuery);) {
+			
+			JSONArray jsonArray = new JSONArray();
+
+			while (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+
+				jsonObject.put("firstName", rs.getString("first_name"));
+				jsonObject.put("lastName", rs.getString("last_name"));
+				jsonObject.put("email", rs.getString("email"));
+				jsonObject.put("password", rs.getString("password"));
+				jsonObject.put("phoneNo", rs.getLong("mobile_number"));
+				jsonObject.put("age", rs.getInt("age"));
+				jsonObject.put("gender", rs.getString("gender"));
+				jsonObject.put("dob", rs.getDate("DOB"));
+				jsonObject.put("location", rs.getString("location"));
+
+				jsonArray.add(jsonObject);
+			}
+
+			res.setResponseCode(200);
+			res.setResponseMsg("Success");
+			res.setData("Data's Fetched Successfully!");
+			res.setjData(jsonArray);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setResponseCode(400);
+			res.setResponseMsg("Error");
+			res.setData("No Data's Were Found!");
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return res;
+
+}

@@ -1,0 +1,62 @@
+
+	@Override
+	public Response createUser(moodlemodel datas) {
+		String uuid = UUID.randomUUID().toString();
+		datas.setsNo(uuid);
+		datas.setCreatedBy(uuid);
+		datas.setUpdatedBy(uuid);
+
+		Date date = new Date(Calendar.getInstance().getTime().getTime());
+		datas.setCreateDate(date);
+		datas.setUpdatedDate(date);
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			try (Connection con = DriverManager.getConnection(url, username, password);
+					Statement st = con.createStatement();) {
+
+				String insertQuery = "INSERT INTO batch17.user_details(s_no,first_name,last_name,gender,email,password,mobile_number,created_date,updated_date,created_by,updated_by,age,DOB)"
+						+ "VALUES('" + datas.getsNo() + "','" + datas.getFirstName() + "','" + datas.getLastName()
+						+ "','" + datas.getGender() + "','" + datas.getEmail() + "','" + datas.getPassword() + "',"
+						+ datas.getMobile_number() + "," + "'" + datas.getCreateDate() + "','" + datas.getUpdatedDate()
+						+ "','" + datas.getCreatedBy() + "','" + datas.getUpdatedBy() + "'," + datas.getAge() + ",'"
+						+ datas.getDOB() + "');";
+				System.out.println(insertQuery);
+
+				st.executeUpdate(insertQuery);
+
+				Pattern p = Pattern.compile("\\w+@gmail\\.com");
+				Matcher m = p.matcher(datas.getEmail());
+
+				boolean matchEmail = m.find();
+
+				String result;
+				String mobileNumber = String.valueOf(datas.getMobileNo());
+				boolean matchMobile = false;
+				if (mobileNo.matches("^[6-9]\\d{9}$")) {
+					matchMobile = true;
+				}
+				if (matchEmail && matchMobile) {
+					result = "User created Successfully";
+				} else if (matchEmail) {
+					result = "Invalid Email!";
+				} else if (matchMobile) {
+					result = "Invalid mobile number!";
+				} else {
+					result = "Invalid Email & mobile number!";
+				}
+				res.setResponseCode(200);
+				res.setReponseMsg("Success");
+				res.setData(result);
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				res.setResponseCode(500);
+				res.setReponseMsg("error");
+				res.setData("Internal server error");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+}

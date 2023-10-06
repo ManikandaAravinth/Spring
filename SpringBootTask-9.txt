@@ -1,0 +1,37 @@
+	@Override
+	public Response loginUser(String email, String password) {
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			String SelectQuery = "SELECT * FROM batch_17.user_details WHERE email='" + email + "' and password='" + password
+					+ "';";
+
+			try (Connection conn = DriverManager.getConnection(url, username, password);
+					PreparedStatement pst = conn.prepareStatement(SelectQuery);
+					ResultSet rs = pst.executeQuery(SelectQuery);) {
+
+				if (rs.next()) {
+					res.setResponseCode(200);
+					res.setResponseMsg("Success");
+					res.setData("Login Successfull!");
+				} else {
+
+					res.setResponseCode(500);
+					res.setResponseMsg("Does Not Exist");
+					res.setData("User Does Not Exit! Create An Account!!!");
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				res.setResponseMsg("error");
+				res.setResponseCode(500);
+				res.setData("Internal Server Error!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return res;
+	}

@@ -1,0 +1,29 @@
+@Override
+public Response deleteUser(String sNo) {
+	try {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+
+		try (Connection conn = DriverManager.getConnection(url, username, password);
+				Statement st = conn.createStatement();) {
+			
+			String deleteQuery = "delete from batch17.user_details where s_no = '" + sNo + "'";
+			
+			st.executeUpdate(deleteQuery);
+
+			res.setResponseCode(200);
+			res.setResponseMsg("Success");
+			res.setData("deleted successfully!");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			res.setResponseCode(500);
+			res.setResponseMsg("Error");
+			res.setData("Internal Server Error!");
+		}
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return res;
+}
